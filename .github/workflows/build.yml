@@ -64,7 +64,7 @@ jobs:
           dotnet-config: Release
           dotnet-target: net8.0
           verbosity: debug
-          
+
 #      - name: Unit Test
 #        id: test
 #        run: |
@@ -96,16 +96,31 @@ jobs:
 
       - name: Create/Update GitHub Release
         if: ${{ needs.setup_release.outputs.publish_release == 'true' }}
-        uses: LizardByte/create-release-action@v2024.516.190229
+        uses: ncipollo/release-action@v1.14.0
         with:
           allowUpdates: true
+          artifactErrorsFailBuild: true
+          artifacts: '*artifacts/*'
           body: ''
-          discussionCategory: announcements
+          commit: ${{ github.sha }}
           generateReleaseNotes: true
           name: ${{ needs.setup_release.outputs.release_tag }}
           prerelease: ${{ needs.setup_release.outputs.publish_pre_release }}
           tag: ${{ needs.setup_release.outputs.release_tag }}
-          token: ${{ secrets.GH_BOT_TOKEN }}
+          #token: ${{ inputs.token }}
+
+#      - name: Create/Update GitHub Release
+#        if: ${{ needs.setup_release.outputs.publish_release == 'true' }}
+#        uses: LizardByte/create-release-action@v2024.516.190229
+#        with:
+          #allowUpdates: true
+          #body: ''
+          #generateReleaseNotes: true
+#          name: ${{ needs.setup_release.outputs.release_tag }}
+#          tag: ${{ needs.setup_release.outputs.release_tag }}
+#          prerelease: ${{ needs.setup_release.outputs.publish_pre_release }}
+#          token: ${{ secrets.GITHUB_TOKEN }}
+          #token: ${{ secrets.GH_BOT_TOKEN }}
 
       - name: Create/Update Jellyfin Release
         if: ${{ needs.setup_release.outputs.publish_release == 'true' }}
